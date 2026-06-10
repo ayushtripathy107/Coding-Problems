@@ -24,3 +24,4 @@ class Solution(object):
                 total_sum += sum(divisors)
                 
         return total_sum
+        
