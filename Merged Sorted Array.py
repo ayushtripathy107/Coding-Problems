@@ -28,5 +28,3 @@ class Solution(object):
             nums1[p] = nums2[p2]
             p2 -= 1
             p -= 1
-
-
