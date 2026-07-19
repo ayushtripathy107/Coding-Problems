@@ -1,0 +1,61 @@
+class Solution(object):
+    def transformStr(self, s, strs):
+        """
+        :type s: str
+        :type strs: List[str]
+        :rtype: List[bool]
+        """
+        n = len(s)
+        
+        # 1. Precompute prefix counts of '0' for string s
+        pref_s = [0] * n
+        count_zero_s = 0
+        for i in range(n):
+            if s[i] == '0':
+                count_zero_s += 1
+            pref_s[i] = count_zero_s
+            
+        ans = []
+        
+        for t in strs:
+            # Quick length check (guaranteed by problem description, but safe)
+            if len(t) != n:
+                ans.append(False)
+                continue
+                
+            # Count current '0's and '?'s in t
+            zeros_in_t = t.count('0')
+            q_marks = t.count('?')
+            
+            zeros_needed = count_zero_s - zeros_in_t
+            
+            # If we need more zeros than available '?' or need a negative amount
+            if zeros_needed < 0 or zeros_needed > q_marks:
+                ans.append(False)
+                continue
+            
+            # 2. Reconstruct the optimal t string greedily
+            # Turn the first `zeros_needed` '?' into '0', rest into '1'
+            t_list = list(t)
+            replaced_q = 0
+            for i in range(n):
+                if t_list[i] == '?':
+                    if replaced_q < zeros_needed:
+                        t_list[i] = '0'
+                        replaced_q += 1
+                    else:
+                        t_list[i] = '1'
+            
+            # 3. Verify the prefix condition
+            possible = True
+            pref_t_count = 0
+            for i in range(n):
+                if t_list[i] == '0':
+                    pref_t_count += 1
+                if pref_s[i] > pref_t_count:
+                    possible = False
+                    break
+                    
+            ans.append(possible)
+            
+        return ans
